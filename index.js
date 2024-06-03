@@ -51,21 +51,23 @@ const seedDoctors = async () => {
 // seedDoctors();
 
 // Login endpoint
+// Login endpoint
 app.post('/api/login', async (req, res) => {
   const { id, name, password } = req.body;
+  console.log('Received login request:', { id, name, password });
+  
   const doctor = await Doctor.findOne({ id, name });
   if (!doctor) {
+    console.log('Doctor not found');
     return res.status(401).send('Invalid ID or name');
   }
+  
   const isPasswordValid = await bcrypt.compare(password, doctor.password);
   if (!isPasswordValid) {
+    console.log('Invalid password');
     return res.status(401).send('Invalid password');
   }
+  
+  console.log('Login successful');
   res.status(200).send('Login successful');
-});
-
-// Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
